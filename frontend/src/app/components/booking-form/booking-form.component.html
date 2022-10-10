@@ -1,0 +1,34 @@
+
+<div fxLayout="column" class="booking-form" fxFlex="80" fxFlexOffset="10" fxLayoutAlign="center">
+
+  <div class="booking-form-title">
+      <span>Buchung</span>
+  </div>
+
+  <mat-form-field appearance="outline">
+      <mat-label>Titel</mat-label>
+    <input matInput placeholder="Titel" required>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Priorität</mat-label>
+    <mat-select placeholder="Priotität">
+      <mat-option value="high">Hoch</mat-option>
+      <mat-option value="low">Niedrig</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Betrag</mat-label>
+    <input matInput type="number" placeholder="Betrag" min="0" required>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Beschreibung</mat-label>
+    <textarea matInput formControlName="description" matTextareaAutosize></textarea>
+
+  </mat-form-field>
+
+  <button mat-raised-button color="primary">Bestätigen</button>
+
+</div>

@@ -1,0 +1,20 @@
+.booking-form {
+  height: 100vh;
+  font-family: "Arial Black";
+}
+
+.booking-form-title {
+  font-size: 150px;
+  margin-bottom: 7rem;
+}
+
+.booking-form textarea {
+  min-height: 200px;
+}
+
+@media screen and (max-width: 992px) {
+  .booking-form-title {
+    margin-bottom: 3rem;
+    font-size: 60px;
+  }
+}
