@@ -1,26 +1,55 @@
-import express, { Express, Request, Response } from 'express';
-import dotenv from 'dotenv';
-import mysql from 'mysql';
-import {connection} from "./db";
+import express from 'express';;
+import logging from "./config/logging";
+import bodyParser from "body-parser";
+import bookingRoutes from './routes/booking';
+import * as http from "http";
+import config from "./config/config";
 
-dotenv.config();
-const app: Express = express();
-const port = process.env.PORT;
-app.use(express.json());
-app.use(
-    express.urlencoded({
-        extended: true,
+const NAMESPACE = 'Server';
+const router = express();
+
+/** Log the request */
+router.use((req, res, next) => {
+    /** Log the req */
+    logging.info(NAMESPACE, `METHOD: [${req.method}] - URL: [${req.url}] - IP: [${req.socket.remoteAddress}]`);
+
+    res.on('finish', () => {
+        /** Log the res */
+        logging.info(NAMESPACE, `METHOD: [${req.method}] - URL: [${req.url}] - STATUS: [${res.statusCode}] - IP: [${req.socket.remoteAddress}]`);
     })
-);
 
-app.get('/test', (req: Request, res: Response) => {
-    res.send('Express + TypeScript Server');
+    next();
 });
 
-if (connection) {
-    console.log("Connection to db successfull");
-}
+/** Parse the body of the request */
+router.use(bodyParser.urlencoded({ extended: true }));
+router.use(bodyParser.json());
 
-app.listen(port, () => {
-    console.log(`Server started at http://localhost:${port}`);
+/** Rules of our API */
+router.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+
+    if (req.method == 'OPTIONS') {
+        res.header('Access-Control-Allow-Methods', 'PUT, POST, PATCH, DELETE, GET');
+        return res.status(200).json({});
+    }
+
+    next();
 });
+
+/** Routes go here */
+router.use('/bookings', bookingRoutes);
+
+/** Error handling */
+router.use((req, res, next) => {
+    const error = new Error('Not found');
+
+    res.status(404).json({
+        message: error.message
+    });
+});
+
+const httpServer = http.createServer(router);
+
+httpServer.listen(config.server.port, () => logging.info(NAMESPACE, `Server is running ${config.server.hostname}:${config.server.port}`));
