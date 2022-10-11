@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {IBooking} from "../../models/IBooking";
+import {DbService} from "../../services/db.service";
 
 @Component({
   selector: 'app-booking-form',
@@ -12,7 +13,9 @@ export class BookingFormComponent implements OnInit {
   public bookingForm: FormGroup;
   public priorities: string[] = [ 'High', 'Low' ];
 
-  constructor() {}
+  constructor(
+    private dbService: DbService,
+  ) {}
 
   ngOnInit(): void {
     this.bookingForm = new FormGroup({
@@ -29,12 +32,11 @@ export class BookingFormComponent implements OnInit {
 
   public submitBookingForm() {
       const booking: IBooking = {
-        amount: this.bookingForm.controls['title'].value,
+        amount: this.bookingForm.controls['amount'].value.toString(),
         description: this.bookingForm.controls['description'].value,
         priority: this.bookingForm.controls['priority'].value,
         title: this.bookingForm.controls['title'].value
       }
-      console.log(booking);
-      // todo call service
+      this.dbService.createBooking(booking);
   }
 }

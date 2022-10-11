@@ -11,11 +11,14 @@ import {MatInputModule} from "@angular/material/input";
 import {MatSelectModule} from "@angular/material/select";
 import {MatButtonModule} from "@angular/material/button";
 import {ReactiveFormsModule} from "@angular/forms";
+import {HttpClientModule} from "@angular/common/http";
+import { BookingListComponent } from './components/booking-list/booking-list.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    BookingFormComponent
+    BookingFormComponent,
+    BookingListComponent
   ],
   imports: [
     BrowserModule,
@@ -27,6 +30,7 @@ import {ReactiveFormsModule} from "@angular/forms";
     MatSelectModule,
     MatButtonModule,
     ReactiveFormsModule,
+    HttpClientModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

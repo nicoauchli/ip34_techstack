@@ -1,0 +1,15 @@
+<h1>Buchungen</h1>
+
+{{ bookings | json }}
+
+
+<table>
+  <tr *ngFor="let item of bookings.results">
+    <td>{{item.id}}</td>
+    <td>{{item.title}}</td>
+    <td>{{item.amount}}</td>
+    <td>{{item.priority}}</td>
+    <td>{{item.description}}</td>
+  </tr>
+
+</table>
