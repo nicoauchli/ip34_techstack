@@ -14,7 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const logging_1 = __importDefault(require("../config/logging"));
 const mysql_1 = require("../config/mysql");
-const NAMESPACE = 'Books';
+const NAMESPACE = 'Bookings';
 const createBooking = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     logging_1.default.info(NAMESPACE, 'Inserting bookings');
     let { title, amount, priority, description } = req.body;

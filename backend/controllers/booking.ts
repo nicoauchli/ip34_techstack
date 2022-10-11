@@ -2,7 +2,7 @@ import logging from "../config/logging";
 import {NextFunction, Request, Response} from "express";
 import { Connect, Query } from '../config/mysql';
 
-const NAMESPACE = 'Books';
+const NAMESPACE = 'Bookings';
 
 const createBooking = async (req: Request, res: Response, next: NextFunction) => {
     logging.info(NAMESPACE, 'Inserting bookings');
