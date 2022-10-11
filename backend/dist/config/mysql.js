@@ -13,17 +13,20 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Query = exports.Connect = void 0;
-const mysql_1 = __importDefault(require("mysql"));
 const config_1 = __importDefault(require("./config"));
+const logging_1 = __importDefault(require("./logging"));
+const mysql2_1 = __importDefault(require("mysql2"));
 const params = {
     user: config_1.default.mysql.user,
     password: config_1.default.mysql.pass,
     host: config_1.default.mysql.host,
-    database: config_1.default.mysql.database
+    database: config_1.default.mysql.database,
+    port: 3306
 };
 const Connect = () => __awaiter(void 0, void 0, void 0, function* () {
     return new Promise((resolve, reject) => {
-        const connection = mysql_1.default.createConnection(params);
+        logging_1.default.info("Server", JSON.stringify(params));
+        const connection = mysql2_1.default.createConnection(params);
         connection.connect((error) => {
             if (error) {
                 reject(error);

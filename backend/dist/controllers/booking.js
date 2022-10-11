@@ -18,6 +18,7 @@ const NAMESPACE = 'Bookings';
 const createBooking = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     logging_1.default.info(NAMESPACE, 'Inserting bookings');
     let { title, amount, priority, description } = req.body;
+    logging_1.default.info(NAMESPACE, title);
     let query = `INSERT INTO bookings (title, amount, priority,  description) VALUES ("${title}", "${amount}", "${priority}", "${description}")`;
     (0, mysql_1.Connect)()
         .then((connection) => {

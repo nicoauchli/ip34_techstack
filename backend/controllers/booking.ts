@@ -9,6 +9,8 @@ const createBooking = async (req: Request, res: Response, next: NextFunction) =>
 
     let { title, amount, priority,  description } = req.body;
 
+    logging.info(NAMESPACE, title);
+
     let query = `INSERT INTO bookings (title, amount, priority,  description) VALUES ("${title}", "${amount}", "${priority}", "${description}")`;
 
     Connect()
