@@ -13,70 +13,40 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const logging_1 = __importDefault(require("../config/logging"));
-const mysql_1 = require("../config/mysql");
+const booking_1 = require("../interfaces/booking");
 const NAMESPACE = 'Bookings';
-const createBooking = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    logging_1.default.info(NAMESPACE, 'Inserting bookings');
+const createBooking = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    logging_1.default.info(NAMESPACE, 'Inserting booking');
     let { title, amount, priority, description } = req.body;
     logging_1.default.info(NAMESPACE, title);
-    let query = `INSERT INTO bookings (title, amount, priority,  description) VALUES ("${title}", "${amount}", "${priority}", "${description}")`;
-    (0, mysql_1.Connect)()
-        .then((connection) => {
-        (0, mysql_1.Query)(connection, query)
-            .then((result) => {
-            logging_1.default.info(NAMESPACE, 'Booking created: ', result);
-            return res.status(200).json({
-                result
-            });
-        })
-            .catch((error) => {
-            logging_1.default.error(NAMESPACE, error.message, error);
-            return res.status(200).json({
-                message: error.message,
-                error
-            });
-        })
-            .finally(() => {
-            logging_1.default.info(NAMESPACE, 'Closing connection.');
-            connection.end();
-        });
-    })
-        .catch((error) => {
-        logging_1.default.error(NAMESPACE, error.message, error);
+    booking_1.Booking.create({
+        title: title,
+        amount: amount,
+        priority: priority,
+        description: description
+    }).then((res) => {
         return res.status(200).json({
-            message: error.message,
+            res
+        });
+    }).catch((error) => {
+        logging_1.default.error(NAMESPACE, error, error);
+        return res.status(200).json({
+            message: error,
             error
         });
     });
 });
-const getAllBookings = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+const getAllBookings = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     logging_1.default.info(NAMESPACE, 'Getting all bookings.');
-    let query = 'SELECT * FROM bookings';
-    (0, mysql_1.Connect)()
-        .then((connection) => {
-        (0, mysql_1.Query)(connection, query)
-            .then((results) => {
-            logging_1.default.info(NAMESPACE, 'Retrieved bookings: ', results);
-            return res.status(200).json({
-                results
-            });
-        })
-            .catch((error) => {
-            logging_1.default.error(NAMESPACE, error.message, error);
-            return res.status(200).json({
-                message: error.message,
-                error
-            });
-        })
-            .finally(() => {
-            logging_1.default.info(NAMESPACE, 'Closing connection.');
-            connection.end();
-        });
-    })
-        .catch((error) => {
-        logging_1.default.error(NAMESPACE, error.message, error);
+    booking_1.Booking.findAll().then((value) => {
+        logging_1.default.info(NAMESPACE, 'Retrieved bookings: ', value);
         return res.status(200).json({
-            message: error.message,
+            value
+        });
+    }).catch((error) => {
+        logging_1.default.error(NAMESPACE, error, error);
+        return res.status(200).json({
+            message: error,
             error
         });
     });

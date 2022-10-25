@@ -1,87 +1,53 @@
 import logging from "../config/logging";
-import {NextFunction, Request, Response} from "express";
-import { Connect, Query } from '../config/mysql';
+import {Request, Response} from "express";
+import {Booking} from "../interfaces/booking";
+import {Model} from "sequelize";
 
 const NAMESPACE = 'Bookings';
 
-const createBooking = async (req: Request, res: Response, next: NextFunction) => {
-    logging.info(NAMESPACE, 'Inserting bookings');
+const createBooking = async (req: Request, res: Response) => {
+    logging.info(NAMESPACE, 'Inserting booking');
 
-    let { title, amount, priority,  description } = req.body;
+    let { title, amount, priority, description } = req.body;
 
     logging.info(NAMESPACE, title);
 
-    let query = `INSERT INTO bookings (title, amount, priority,  description) VALUES ("${title}", "${amount}", "${priority}", "${description}")`;
-
-    Connect()
-        .then((connection) => {
-            Query(connection, query)
-                .then((result) => {
-                    logging.info(NAMESPACE, 'Booking created: ', result);
-
-                    return res.status(200).json({
-                        result
-                    });
-                })
-                .catch((error: { message: string; }) => {
-                    logging.error(NAMESPACE, error.message, error);
-
-                    return res.status(200).json({
-                        message: error.message,
-                        error
-                    });
-                })
-                .finally(() => {
-                    logging.info(NAMESPACE, 'Closing connection.');
-                    connection.end();
-                });
+    Booking.create({
+        title: title,
+        amount: amount,
+        priority: priority,
+        description: description
+    }).then((res: Response) => {
+        return res.status(200).json({
+            res
         })
-        .catch((error) => {
-            logging.error(NAMESPACE, error.message, error);
+    }).catch((error: string) => {
+        logging.error(NAMESPACE, error, error);
 
-            return res.status(200).json({
-                message: error.message,
-                error
-            });
+        return res.status(200).json({
+            message: error,
+            error
         });
+    });
 };
 
-const getAllBookings = async (req: Request, res: Response, next: NextFunction) => {
+const getAllBookings = async (req: Request, res: Response) => {
     logging.info(NAMESPACE, 'Getting all bookings.');
 
-    let query = 'SELECT * FROM bookings';
+    Booking.findAll().then( (value: Model[])=> {
+        logging.info(NAMESPACE, 'Retrieved bookings: ', value);
 
-    Connect()
-        .then((connection) => {
-            Query(connection, query)
-                .then((results) => {
-                    logging.info(NAMESPACE, 'Retrieved bookings: ', results);
-
-                    return res.status(200).json({
-                        results
-                    });
-                })
-                .catch((error: { message: string; }) => {
-                    logging.error(NAMESPACE, error.message, error);
-
-                    return res.status(200).json({
-                        message: error.message,
-                        error
-                    });
-                })
-                .finally(() => {
-                    logging.info(NAMESPACE, 'Closing connection.');
-                    connection.end();
-                });
-        })
-        .catch((error: { message: string; }) => {
-            logging.error(NAMESPACE, error.message, error);
-
-            return res.status(200).json({
-                message: error.message,
-                error
-            });
+        return res.status(200).json({
+            value
         });
-};
+    }).catch((error:string) => {
+        logging.error(NAMESPACE, error, error);
+
+        return res.status(200).json({
+            message: error,
+            error
+        });
+    });
+}
 
 export default { createBooking: createBooking, getAllBookings: getAllBookings };
